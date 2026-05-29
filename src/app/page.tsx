@@ -1,65 +1,70 @@
-import Image from "next/image";
+import WeekCard from '@/components/WeekCard'
+import { Week } from '@/lib/supabase'
 
-export default function Home() {
+export const dynamic = 'force-dynamic'
+
+async function getWeeks(): Promise<Week[]> {
+  try {
+    const baseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+    const key = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+    if (!baseUrl || !key) return []
+    const url = `${baseUrl}/rest/v1/weeks?status=eq.published&select=*&order=week_number.asc`
+    const res = await fetch(url, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    })
+    console.log('[getWeeks] status:', res.status)
+    if (!res.ok) {
+      console.error('[getWeeks] error body:', await res.text())
+      return []
+    }
+    const data = await res.json()
+    console.log('[getWeeks] rows:', data.length)
+    return data
+  } catch (e) {
+    console.error('[getWeeks] exception:', e)
+    return []
+  }
+}
+
+export default async function Home() {
+  const weeks = await getWeeks()
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div>
+      {/* Hero */}
+      <section className="bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+          <p className="text-sm font-semibold text-indigo-600 mb-2">AI 교육 아카이브</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            AX 요약정리
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+            수업을 듣지 않아도 누구나 따라올 수 있도록, 주차별 이론과 실습을 정리합니다.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      {/* Week grid */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        {weeks && weeks.length > 0 ? (
+          <>
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6">
+              전체 {weeks.length}주차
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {weeks.map((week) => (
+                <WeekCard key={week.id} week={week} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-24 text-gray-400">
+            <p className="text-4xl mb-4">📚</p>
+            <p className="text-lg font-medium">아직 업로드된 수업이 없습니다.</p>
+            <p className="text-sm mt-1">곧 업로드될 예정입니다.</p>
+          </div>
+        )}
+      </section>
     </div>
-  );
+  )
 }
