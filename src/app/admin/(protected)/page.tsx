@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import Link from 'next/link'
-import { deleteWeek } from '../actions'
+import DeleteWeekButton from './DeleteWeekButton'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -58,17 +58,7 @@ export default async function AdminDashboard() {
                       >
                         수정
                       </Link>
-                      <form action={deleteWeek.bind(null, week.id)}>
-                        <button
-                          type="submit"
-                          className="text-red-400 hover:text-red-600 transition-colors"
-                          onClick={(e) => {
-                            if (!confirm(`"${week.title}" 주차를 삭제할까요?`)) e.preventDefault()
-                          }}
-                        >
-                          삭제
-                        </button>
-                      </form>
+                      <DeleteWeekButton id={week.id} title={week.title} />
                     </div>
                   </td>
                 </tr>
