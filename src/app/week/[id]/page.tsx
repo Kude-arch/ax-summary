@@ -44,14 +44,14 @@ export default async function WeekPage(props: PageProps<'/week/[id]'>) {
       <nav className="text-sm text-gray-400 mb-6">
         <Link href="/" className="hover:text-indigo-600 transition-colors">홈</Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-600">Week {week.week_number}</span>
+        <span className="text-gray-600">{week.label ?? `Week ${week.week_number}`}</span>
       </nav>
 
       {/* Header */}
       <div className="mb-8 pb-8 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-            Week {week.week_number}
+            {week.label ?? `Week ${week.week_number}`}
           </span>
           {formattedDate && (
             <span className="text-xs text-gray-400">{formattedDate}</span>
