@@ -8,6 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export type Week = {
   id: string
   week_number: number
+  label: string | null
   title: string
   description: string | null
   date: string | null

@@ -12,6 +12,7 @@ export type MaterialInput = {
 
 export type WeekInput = {
   week_number: number
+  label: string
   title: string
   description: string
   date: string
@@ -41,6 +42,7 @@ export async function createWeek(data: WeekInput) {
     .from('weeks')
     .insert({
       week_number: data.week_number,
+      label: data.label || null,
       title: data.title,
       description: data.description || null,
       date: data.date || null,
@@ -78,6 +80,7 @@ export async function updateWeek(id: string, data: WeekInput) {
     .from('weeks')
     .update({
       week_number: data.week_number,
+      label: data.label || null,
       title: data.title,
       description: data.description || null,
       date: data.date || null,

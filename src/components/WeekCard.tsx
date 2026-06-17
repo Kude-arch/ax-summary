@@ -11,7 +11,7 @@ export default function WeekCard({ week }: { week: Week }) {
       <div className="bg-white border border-gray-200 rounded-xl p-6 h-full hover:shadow-md hover:border-indigo-200 transition-all duration-200">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-            Week {week.week_number}
+            {week.label ?? `Week ${week.week_number}`}
           </span>
           {formattedDate && (
             <span className="text-xs text-gray-400">{formattedDate}</span>

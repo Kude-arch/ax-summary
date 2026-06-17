@@ -13,6 +13,7 @@ const emptyMaterial = (): MaterialInput => ({ label: '', type: 'link', url: '', 
 
 export default function WeekForm({ mode, weekId, defaultValues }: Props) {
   const [weekNumber, setWeekNumber] = useState(defaultValues?.week_number?.toString() ?? '')
+  const [label, setLabel] = useState(defaultValues?.label ?? '')
   const [title, setTitle] = useState(defaultValues?.title ?? '')
   const [description, setDescription] = useState(defaultValues?.description ?? '')
   const [date, setDate] = useState(defaultValues?.date ?? '')
@@ -37,6 +38,7 @@ export default function WeekForm({ mode, weekId, defaultValues }: Props) {
 
     const data: WeekInput = {
       week_number: parseInt(weekNumber),
+      label,
       title,
       description,
       date,
@@ -75,6 +77,11 @@ export default function WeekForm({ mode, weekId, defaultValues }: Props) {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
               className={inputClass} />
           </div>
+        </div>
+        <div>
+          <label className={labelClass}>뱃지 라벨 (선택)</label>
+          <input type="text" value={label} onChange={(e) => setLabel(e.target.value)}
+            className={inputClass} placeholder="비워두면 'Week N'으로 표시됩니다. 예: 3회차 보강" />
         </div>
         <div>
           <label className={labelClass}>제목 *</label>
