@@ -28,9 +28,10 @@ export type Material = {
   id: string
   week_id: string
   label: string
-  type: 'file' | 'link' | 'video' | 'lecture'
+  type: 'file' | 'link' | 'video' | 'lecture' | 'assignment'
   url: string
   file_size: number | null
   order: number
+  description: string | null
   created_at: string
 }

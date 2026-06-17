@@ -18,6 +18,47 @@ function getYoutubeId(url: string): string | null {
   return match ? match[1] : null
 }
 
+function AssignmentCard({ m }: { m: Material }) {
+  return (
+    <a
+      href={m.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block rounded-xl overflow-hidden hover:shadow-xl transition-all group mb-6 bg-gradient-to-br from-orange-500 to-amber-500 border-2 border-orange-400 hover:border-orange-500"
+    >
+      <div className="px-5 py-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-white/80 uppercase tracking-wide">과제 제출</span>
+              <span className="text-xs font-bold text-white bg-white/25 px-2 py-0.5 rounded-full">
+                마감 06/24
+              </span>
+            </div>
+            <p className="text-base font-bold text-white group-hover:text-white/90 transition-colors">
+              {m.label}
+            </p>
+            {m.description && (
+              <p className="text-sm text-white/85 mt-1.5 leading-relaxed">{m.description}</p>
+            )}
+          </div>
+          <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+        </div>
+        <div className="mt-3 pt-3 border-t border-white/20 flex items-center gap-1.5 text-white/70">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13l-7 7-7-7m7 7V6" />
+          </svg>
+          <span className="text-xs font-medium">Google Drive 열기 ↗</span>
+        </div>
+      </div>
+    </a>
+  )
+}
+
 function LectureCard({ m }: { m: Material }) {
   const ytId = getYoutubeId(m.url)
   const thumbnail = ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : null
@@ -71,8 +112,9 @@ export default function WeekTabs({
   practice: Content | null
   materials: Material[]
 }) {
+  const assignments = materials.filter((m) => m.type === 'assignment')
   const lectures = materials.filter((m) => m.type === 'lecture')
-  const nonVideos = materials.filter((m) => m.type !== 'video' && m.type !== 'lecture')
+  const nonVideos = materials.filter((m) => m.type !== 'video' && m.type !== 'lecture' && m.type !== 'assignment')
   const videos = materials.filter((m) => m.type === 'video')
 
   const [active, setActive] = useState<Tab>('material')
@@ -121,7 +163,10 @@ export default function WeekTabs({
       {/* Materials */}
       {active === 'material' && (
         <div>
-          {/* 강의 영상 (상단 강조) */}
+          {/* 과제 제출 (최상단 강조) */}
+          {assignments.map((m) => <AssignmentCard key={m.id} m={m} />)}
+
+          {/* 강의 영상 */}
           {lectures.map((m) => <LectureCard key={m.id} m={m} />)}
 
           {/* 일반 자료 */}
@@ -152,7 +197,7 @@ export default function WeekTabs({
               ))}
             </ul>
           ) : (
-            lectures.length === 0 && <EmptyState message="등록된 자료가 없습니다." />
+            assignments.length === 0 && lectures.length === 0 && <EmptyState message="등록된 자료가 없습니다." />
           )}
         </div>
       )}
