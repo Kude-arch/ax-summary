@@ -8,7 +8,7 @@ async function getWeeks(): Promise<Week[]> {
     const baseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
     const key = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
     if (!baseUrl || !key) return []
-    const url = `${baseUrl}/rest/v1/weeks?status=eq.published&select=*&order=week_number.asc`
+    const url = `${baseUrl}/rest/v1/ax_weeks?status=eq.published&select=*&order=week_number.asc`
     const res = await fetch(url, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
     })

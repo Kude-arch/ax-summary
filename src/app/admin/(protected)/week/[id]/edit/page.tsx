@@ -7,9 +7,9 @@ export default async function EditWeekPage(props: PageProps<'/admin/week/[id]/ed
   const supabase = await createClient()
 
   const [{ data: week }, { data: contents }, { data: materials }] = await Promise.all([
-    supabase.from('weeks').select('*').eq('id', id).single(),
-    supabase.from('contents').select('*').eq('week_id', id),
-    supabase.from('materials').select('*').eq('week_id', id).order('order', { ascending: true }),
+    supabase.from('ax_weeks').select('*').eq('id', id).single(),
+    supabase.from('ax_contents').select('*').eq('week_id', id),
+    supabase.from('ax_materials').select('*').eq('week_id', id).order('order', { ascending: true }),
   ])
 
   if (!week) notFound()

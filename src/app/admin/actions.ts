@@ -39,7 +39,7 @@ export async function createWeek(data: WeekInput) {
   const supabase = await createClient()
 
   const { data: week, error } = await supabase
-    .from('weeks')
+    .from('ax_weeks')
     .insert({
       week_number: data.week_number,
       label: data.label || null,
@@ -61,11 +61,11 @@ export async function createWeek(data: WeekInput) {
     contentInserts.push({ week_id: week.id, type: 'practice', body: data.practice_body })
   }
   if (contentInserts.length > 0) {
-    await supabase.from('contents').insert(contentInserts)
+    await supabase.from('ax_contents').insert(contentInserts)
   }
 
   if (data.materials.length > 0) {
-    await supabase.from('materials').insert(
+    await supabase.from('ax_materials').insert(
       data.materials.map((m) => ({ ...m, week_id: week.id }))
     )
   }
@@ -77,7 +77,7 @@ export async function updateWeek(id: string, data: WeekInput) {
   const supabase = await createClient()
 
   const { error } = await supabase
-    .from('weeks')
+    .from('ax_weeks')
     .update({
       week_number: data.week_number,
       label: data.label || null,
@@ -90,8 +90,8 @@ export async function updateWeek(id: string, data: WeekInput) {
 
   if (error) return { error: error.message }
 
-  await supabase.from('contents').delete().eq('week_id', id)
-  await supabase.from('materials').delete().eq('week_id', id)
+  await supabase.from('ax_contents').delete().eq('week_id', id)
+  await supabase.from('ax_materials').delete().eq('week_id', id)
 
   const contentInserts = []
   if (data.theory_body) {
@@ -101,11 +101,11 @@ export async function updateWeek(id: string, data: WeekInput) {
     contentInserts.push({ week_id: id, type: 'practice', body: data.practice_body })
   }
   if (contentInserts.length > 0) {
-    await supabase.from('contents').insert(contentInserts)
+    await supabase.from('ax_contents').insert(contentInserts)
   }
 
   if (data.materials.length > 0) {
-    await supabase.from('materials').insert(
+    await supabase.from('ax_materials').insert(
       data.materials.map((m) => ({ ...m, week_id: id }))
     )
   }
@@ -115,6 +115,6 @@ export async function updateWeek(id: string, data: WeekInput) {
 
 export async function deleteWeek(id: string) {
   const supabase = await createClient()
-  await supabase.from('weeks').delete().eq('id', id)
+  await supabase.from('ax_weeks').delete().eq('id', id)
   redirect('/admin')
 }

@@ -5,7 +5,7 @@ import DeleteWeekButton from './DeleteWeekButton'
 export default async function AdminDashboard() {
   const supabase = await createClient()
   const { data: weeks } = await supabase
-    .from('weeks')
+    .from('ax_weeks')
     .select('*')
     .order('week_number', { ascending: true })
 

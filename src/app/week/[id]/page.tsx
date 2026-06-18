@@ -14,7 +14,7 @@ function getSupabase() {
 export async function generateMetadata(props: PageProps<'/week/[id]'>): Promise<Metadata> {
   const { id } = await props.params
   const supabase = getSupabase()
-  const { data: week } = await supabase.from('weeks').select('title, description').eq('id', id).single()
+  const { data: week } = await supabase.from('ax_weeks').select('title, description').eq('id', id).single()
   if (!week) return {}
   return { title: `${week.title} | AX 요약정리`, description: week.description ?? undefined }
 }
@@ -24,9 +24,9 @@ export default async function WeekPage(props: PageProps<'/week/[id]'>) {
   const supabase = getSupabase()
 
   const [{ data: week }, { data: contents }, { data: materials }] = await Promise.all([
-    supabase.from('weeks').select('*').eq('id', id).eq('status', 'published').single(),
-    supabase.from('contents').select('*').eq('week_id', id),
-    supabase.from('materials').select('*').eq('week_id', id).order('order', { ascending: true }),
+    supabase.from('ax_weeks').select('*').eq('id', id).eq('status', 'published').single(),
+    supabase.from('ax_contents').select('*').eq('week_id', id),
+    supabase.from('ax_materials').select('*').eq('week_id', id).order('order', { ascending: true }),
   ])
 
   if (!week) notFound()
